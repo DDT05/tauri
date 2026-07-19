@@ -159,8 +159,14 @@
   text-align: center;
 }
 
-/* ─── Cert button ──────────────────────── */
-.cert-btn {
+/* ─── Actions ─────────────────────────── */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.action-btn {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
@@ -170,8 +176,28 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.cert-btn:hover {
+.action-btn:hover {
   background: #1c1c1e;
+}
+
+/* ─── Log Viewer ──────────────────────── */
+.log-viewer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  width: 370px;
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: left;
+}
+.log-viewer pre {
+  font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
 }
 
 /* ─── Toast ────────────────────────────── */

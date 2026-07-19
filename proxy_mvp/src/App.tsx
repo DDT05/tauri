@@ -7,10 +7,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
   const [certInstalled, setCertInstalled] = useState(false);
+  const [logs, setLogs] = useState("");
+  const [showLogs, setShowLogs] = useState(false);
 
   useEffect(() => {
-    invoke<boolean>("get_proxy_status")
-      .then(setIsOn)
+    invoke<{ running: boolean }>("get_proxy_status")
+      .then((s) => setIsOn(s.running))
       .catch(() => {});
   }, []);
 
@@ -36,6 +38,17 @@ function App() {
       setStatusMsg(result);
     } catch (err) {
       setStatusMsg(String(err));
+    }
+  };
+
+  const handleShowLogs = async () => {
+    try {
+      const result = await invoke<string>("get_logs");
+      setLogs(result);
+      setShowLogs(!showLogs);
+    } catch (err) {
+      setLogs(String(err));
+      setShowLogs(true);
     }
   };
 
@@ -66,17 +79,28 @@ function App() {
       <p className="hint">
         {isOn
           ? "Proxy active — browse ChatGPT and Claude normally."
-          : "Tap to enable — no settings needed."}
+          : "Tap to enable — one click, no settings."}
       </p>
 
-      {!isOn && !certInstalled && (
-        <button className="cert-btn" onClick={handleInstallCert}>
-          🔐 Install Certificate (first time only)
+      <div className="actions">
+        {!isOn && !certInstalled && (
+          <button className="action-btn" onClick={handleInstallCert}>
+            🔐 Install Certificate (first time only)
+          </button>
+        )}
+        <button className="action-btn" onClick={handleShowLogs}>
+          📋 {showLogs ? "Hide Logs" : "Show Logs"}
         </button>
+      </div>
+
+      {showLogs && (
+        <div className="log-viewer">
+          <pre>{logs || "No logs yet."}</pre>
+        </div>
       )}
 
       {statusMsg && (
-        <div className={`toast ${statusMsg.includes("ON") ? "success" : "error"}`}>
+        <div className={`toast ${statusMsg.includes("ON") || statusMsg.includes("CertInstalled") ? "success" : "error"}`}>
           {statusMsg}
         </div>
       )}
